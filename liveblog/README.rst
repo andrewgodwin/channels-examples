@@ -36,6 +36,22 @@ Finally, run::
     python manage.py runserver
 
 
+Usage
+-----
+
+Make yourself a superuser account::
+
+    python manage.py createsuperuser
+
+Then, log into http://localhost:8000/admin/ and make a new Liveblog object.
+
+Open a new window, go to http://localhost:8000/, and click on your new liveblog
+to see its posts page.
+
+Now, in the admin, make some new Posts against your blog, and watch them appear
+in your new window. Edit them, and they'll update themselves live on the page too.
+
+
 Suggested Exercises
 -------------------
 
