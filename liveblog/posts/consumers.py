@@ -48,5 +48,5 @@ def disconnect_blog(message, slug):
         # send an error back. Instead, we just return from the consumer.
         return
     # It's called .discard() because if the reply channel is already there it
-    # won't fail - just lie the set() type.
+    # won't fail - just like the set() type.
     Group(liveblog.group_name).discard(message.reply_channel)
