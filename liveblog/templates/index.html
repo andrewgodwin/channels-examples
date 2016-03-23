@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Liveblog Example{% endblock %}
+{% block header_text %}Liveblog Example{% endblock %}
+
+{% block content %}
+
+    <p>Currently available liveblogs (make more in the <a href="/admin">admin</a>):</p>
+
+    {% for liveblog in liveblogs %}
+        <p>
+            <a href="{{ liveblog.get_absolute_url }}">{{ liveblog.title }}</a>
+        </p>
+    {% empty %}
+        <p class="empty">No liveblogs yet.</p>
+    {% endfor %}
+
+{% endblock %}
