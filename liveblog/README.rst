@@ -28,7 +28,7 @@ Make a new virtualenv for the project, and run::
 
 Then, you'll need Redis running locally; the settings are configured to
 point to ``localhost``, port ``6379``, but you can change this in the
-``CHANNEL_LAYERS`` setting in ``settings.py`.
+``CHANNEL_LAYERS`` setting in ``settings.py``.
 
 Finally, run::
 
