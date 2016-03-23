@@ -26,6 +26,7 @@ def connect_blog(message, slug):
             "text": json.dumps({"error": "bad_slug"}),
             "close": True,
         })
+        return
     # Each different client has a different "reply_channel", which is how you
     # send information back to them. We can add all the different reply channels
     # to a single Group, and then when we send to the group, they'll all get the
