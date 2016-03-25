@@ -58,7 +58,7 @@ class Post(models.Model):
         Short first part of the body to show in the admin or other compressed
         views to give you some idea of what this is.
         """
-        return self.body[50:]
+        return self.body[:50]
 
     def html_body(self):
         """
