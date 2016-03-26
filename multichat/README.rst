@@ -55,10 +55,8 @@ Now, you can type messages and see them appear on both screens at once. You can
 join other rooms and try there, and see how you receive messages from all rooms
 you've currently joined.
 
-Finally, if you feel like it, try and make the non-staff user join the
-staff-only room by manually calling ``??????`` in the browser's developer
-console - notice how the authentication works on the socket too and denies you
-access.
+If you try and make the non-staff user join your staff-only chatroom, you should
+see an error as the server-side authentication code kicks in.
 
 
 Suggested Exercises
