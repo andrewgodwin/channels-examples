@@ -1,5 +1,5 @@
 from channels import route
-from .consumers import ws_connect, ws_receive, ws_disconnect, handle_chat_message
+from .consumers import ws_connect, ws_receive, ws_disconnect, chat_join, chat_leave, chat_send
 
 
 # There's no path matching on these routes; we just rely on the matching
@@ -19,6 +19,10 @@ websocket_routing = [
 # You can have as many lists here as you like, and choose any name.
 # Just refer to the individual names in the include() function.
 custom_routing = [
-    # Custom channel
-    route("chat_messages", handle_chat_message),
+    # Handling different chat commands (websocket.receive is decoded and put
+    # onto this channel) - routed on the "command" attribute of the decoded
+    # message.
+    route("chat.receive", chat_join, command="^join$"),
+    route("chat.receive", chat_leave, command="^leave$"),
+    route("chat.receive", chat_send, command="^send$"),
 ]

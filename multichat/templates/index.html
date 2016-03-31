@@ -51,7 +51,9 @@
                     // Hook up send button to send a message
                     roomdiv.find("form").on("submit", function () {
                         socket.send(JSON.stringify({
-                            "send": [data.join, roomdiv.find("input").val()]
+                            "command": "send",
+                            "room": data.join,
+                            "message": roomdiv.find("input").val()
                         }));
                         roomdiv.find("input").val("");
                         return false;
@@ -88,13 +90,15 @@
                     // Leave room
                     $(this).removeClass("joined");
                     socket.send(JSON.stringify({
-                        "leave": roomId
+                        "command": "leave",
+                        "room": roomId
                     }));
                 } else {
                     // Join room
                     $(this).addClass("joined");
                     socket.send(JSON.stringify({
-                        "join": roomId
+                        "command": "join",
+                        "room": roomId
                     }));
                 }
             })

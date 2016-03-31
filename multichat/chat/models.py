@@ -1,3 +1,4 @@
+import json
 from django.db import models
 from channels import Channel, Group
 
@@ -28,12 +29,11 @@ class Room(models.Model):
         """
         Called to send a message to the room on behalf of a user.
         """
-        # Send the message to the generic "message handling" channel; a consumer
-        # will get it and convert it into websocket sends on the Group.
-        # This isn't entirely necessary here, but could be useful if you want
-        # to dispatch to multiple different subsystems on multiple channels
-        Channel("chat_messages").send({
-            "room": str(self.id),
-            "message": message,
-            "username": user.username,
+        # Send out the message to everyone in the room
+        self.websocket_group.send({
+            "text": json.dumps({
+                "room": str(self.id),
+                "message": message,
+                "username": user.username,
+            }),
         })
