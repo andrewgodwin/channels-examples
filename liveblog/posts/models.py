@@ -1,9 +1,11 @@
 import json
 from django.db import models
 from django.template.defaultfilters import linebreaks_filter
+from django.utils.six import python_2_unicode_compatible
 from channels import Group
 
 
+@python_2_unicode_compatible
 class Liveblog(models.Model):
     """
     A liveblog - a collection of posts under a title, like the event name that's
@@ -33,6 +35,7 @@ class Liveblog(models.Model):
         return "liveblog-%s" % self.id
 
 
+@python_2_unicode_compatible
 class Post(models.Model):
     """
     A single post in a liveblog; they'll be shown in descending date order,

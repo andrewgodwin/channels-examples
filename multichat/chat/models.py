@@ -1,8 +1,10 @@
 import json
 from django.db import models
+from django.utils.six import python_2_unicode_compatible
 from channels import Channel, Group
 
 
+@python_2_unicode_compatible
 class Room(models.Model):
     """
     A room for people to chat in.
