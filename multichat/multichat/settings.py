@@ -44,6 +44,11 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'multichat.urls'
 
+import os
+redis_host = "localhost"
+if os.environ['WITH_DOCKER'] == 'True':
+    redis_host = "redis"
+
 # Channel layer definitions
 # http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
 CHANNEL_LAYERS = {
@@ -51,7 +56,7 @@ CHANNEL_LAYERS = {
         # This example app uses the Redis channel layer implementation asgi_redis
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [(redis_host, 6379)],
         },
         "ROUTING": "multichat.routing.channel_routing",
     },
