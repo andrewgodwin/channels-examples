@@ -44,11 +44,6 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'liveblog.urls'
 
-
-redis_host = "localhost"
-if WITH_DOCKER == 'True':
-    redis_host = "redis"
-
 import os
 redis_host = "localhost"
 if os.environ['WITH_DOCKER'] == 'True':
