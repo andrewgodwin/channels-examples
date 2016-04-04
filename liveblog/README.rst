@@ -41,13 +41,13 @@ Finally, run::
 Docker installation
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Run the app:
+Run the app::
   
     docker-compose up
 
 The app will now be running on: {your-docker-ip}:8000
 
-* You will need to prefix `python manage.py` commands with: `docker-compose run --rm web`. e.g.: `docker-compose run --rm web python manage.py createsuperuser`
+* You will need to prefix ``python manage.py`` commands with: ``docker-compose run --rm web``. e.g.: ``docker-compose run --rm web python manage.py createsuperuser``
 
 Finally, run::
 
