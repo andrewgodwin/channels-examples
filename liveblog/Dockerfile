@@ -1,6 +1,6 @@
 FROM python:3.4
 ENV PYTHONUNBUFFERED 1
-ENV WITH_DOCKER True
+ENV REDIS_HOST "redis"
 RUN mkdir /code
 WORKDIR /code
 ADD . /code/

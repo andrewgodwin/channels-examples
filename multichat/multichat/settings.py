@@ -44,10 +44,7 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'multichat.urls'
 
-import os
-redis_host = "localhost"
-if os.environ['WITH_DOCKER'] == 'True':
-    redis_host = "redis"
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
 # Channel layer definitions
 # http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
