@@ -22,6 +22,9 @@ instead.
 Installation
 ------------
 
+Manual installation
+~~~~~~~~~~~~~~~~~~~~~~
+
 Make a new virtualenv for the project, and run::
 
     pip install -r requirements.txt
@@ -34,6 +37,21 @@ Finally, run::
 
     python manage.py migrate
     python manage.py runserver
+
+Docker installation
+~~~~~~~~~~~~~~~~~~~~~~
+
+Run the app::
+  
+    docker-compose up
+
+The app will now be running on: {your-docker-ip}:8000
+
+* You will need to prefix ``python manage.py`` commands with: ``docker-compose run --rm web``. e.g.: ``docker-compose run --rm web python manage.py createsuperuser``
+
+Finally, run::
+
+    docker-compose run --rm web python manage.py migrate
 
 
 Usage
@@ -50,6 +68,8 @@ to see its posts page.
 
 Now, in the admin, make some new Posts against your blog, and watch them appear
 in your new window. Edit them, and they'll update themselves live on the page too.
+
+
 
 
 Suggested Exercises
