@@ -63,7 +63,7 @@ def chat_join(message):
 
     # Send a "enter message" to the room if available
     if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-        room.send_message(None, message.user.username, MSG_TYPE_ENTER)
+        room.send_message(None, message.user, MSG_TYPE_ENTER)
 
     # OK, add them in. The websocket_group is what we'll send messages
     # to so that everyone in the chat room gets them.
@@ -88,7 +88,7 @@ def chat_leave(message):
 
     # Send a "leave message" to the room if available
     if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
-        room.send_message(None, message.user.username, MSG_TYPE_LEAVE)
+        room.send_message(None, message.user, MSG_TYPE_LEAVE)
 
     room.websocket_group.discard(message.reply_channel)
     message.channel_session['rooms'] = list(set(message.channel_session['rooms']).difference([room.id]))
