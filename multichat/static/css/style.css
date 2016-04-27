@@ -124,3 +124,9 @@ p {
         width: 100px;
         font-weight: bold;
     }
+    #chats .text-muted {
+        margin: 5px 5px 5px 5px;
+        opacity: .6;
+        text-align: center;
+        font-style: italic;
+    }
