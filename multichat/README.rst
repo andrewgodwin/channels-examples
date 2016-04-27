@@ -83,12 +83,6 @@ Suggested Exercises
 If you want to try out making some changes and getting a feel for Channels,
 here's some ideas and hints on how to do them:
 
-* Show messages to other users when someone joins or leaves a room. You can send
-  a message to the Room in the join/leave handling code; do this with their user
-  and a message text like ``<joined>``. Maybe consider modifying send_message
-  so you can send "system messages" that display differently in the client
-  (i.e. without a username).
-
 * Add message persistence. There's already a message sent to make a user join
   a room, so you can use that to send some previous messages; you'll need to make
   a model to save messages in, though, and write to it in the Room.send_message
