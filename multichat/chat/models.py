@@ -1,7 +1,9 @@
 import json
 from django.db import models
 from django.utils.six import python_2_unicode_compatible
-from channels import Channel, Group
+from channels import Group
+
+from .settings import MSG_TYPE_MESSAGE
 
 
 @python_2_unicode_compatible
@@ -27,15 +29,13 @@ class Room(models.Model):
         """
         return Group("room-%s" % self.id)
 
-    def send_message(self, message, user):
+    def send_message(self, message, user, msg_type=MSG_TYPE_MESSAGE):
         """
         Called to send a message to the room on behalf of a user.
         """
+        final_msg = {'room': str(self.id), 'message': message, 'user': user.username, 'type': msg_type}
+
         # Send out the message to everyone in the room
-        self.websocket_group.send({
-            "text": json.dumps({
-                "room": str(self.id),
-                "message": message,
-                "username": user.username,
-            }),
-        })
+        self.websocket_group.send(
+            {"text": json.dumps(final_msg)}
+        )

@@ -1,6 +1,8 @@
 import json
 from channels import Channel
 from channels.auth import channel_session_user_from_http, channel_session_user
+
+from .settings import MSG_TYPE_LEAVE, MSG_TYPE_ENTER, NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS
 from .models import Room
 from .utils import get_room_or_error, catch_client_error
 
@@ -58,6 +60,11 @@ def chat_join(message):
     # Note that, because of channel_session_user, we have a message.user
     # object that works just like request.user would. Security!
     room = get_room_or_error(message["room"], message.user)
+
+    # Send a "enter message" to the room if available
+    if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+        room.send_message(None, message.user.username, MSG_TYPE_ENTER)
+
     # OK, add them in. The websocket_group is what we'll send messages
     # to so that everyone in the chat room gets them.
     room.websocket_group.add(message.reply_channel)
@@ -78,6 +85,11 @@ def chat_join(message):
 def chat_leave(message):
     # Reverse of join - remove them from everything.
     room = get_room_or_error(message["room"], message.user)
+
+    # Send a "leave message" to the room if available
+    if NOTIFY_USERS_ON_ENTER_OR_LEAVE_ROOMS:
+        room.send_message(None, message.user.username, MSG_TYPE_LEAVE)
+
     room.websocket_group.discard(message.reply_channel)
     message.channel_session['rooms'] = list(set(message.channel_session['rooms']).difference([room.id]))
     # Send a message back that will prompt them to close the room
