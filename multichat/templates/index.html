@@ -77,15 +77,30 @@
                                     "<span class='body'>" + data.message + "</span>" +
                                     "</div>";
                             break;
+                        case 1:
+                            // Warning / Advice messages
+                            ok_msg = "<div class='contextual-message text-warning'>" + data.message +
+                                    "</div>";
+                            break;
+                        case 2:
+                            // Alert / Danger messages
+                            ok_msg = "<div class='contextual-message text-danger'>" + data.message +
+                                    "</div>";
+                            break;
+                        case 3:
+                            // "Muted" messages
+                            ok_msg = "<div class='contextual-message text-muted'>" + data.message +
+                                    "</div>";
+                            break;
                         case 4:
                             // User joined room
-                            ok_msg = "<div class='text-muted'>" + data.username +
+                            ok_msg = "<div class='contextual-message text-muted'>" + data.username +
                                     " joined the room!" +
                                     "</div>";
                             break;
                         case 5:
-                            // User joined room
-                            ok_msg = "<div class='text-muted'>" + data.username +
+                            // User left room
+                            ok_msg = "<div class='contextual-message text-muted'>" + data.username +
                                     " left the room!" +
                                     "</div>";
                             break;

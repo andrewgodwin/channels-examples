@@ -12,8 +12,8 @@ b, u, i, center,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
     margin: 0;
@@ -24,7 +24,7 @@ time, mark, audio, video {
     vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
+article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
     display: block;
 }
@@ -115,18 +115,26 @@ p {
         background: #eee;
         margin: 2px 0 5px 0;
     }
-    #chats .message {
-        margin: 5px 5px 5px 5px;
-    }
     #chats .username {
         display: inline-block;
         color: #C07A36;
         width: 100px;
         font-weight: bold;
     }
-    #chats .text-muted {
-        margin: 5px 5px 5px 5px;
-        opacity: .6;
+    #chats .contextual-message{
         text-align: center;
+        margin: 5px 5px 5px 5px;
+    }
+    #chats .text-muted {
+        opacity: .6;
+        font-style: italic;
+    }
+    #chats .text-danger {
+        color: #a94442;
+        font-weight: bold;
+    }
+    #chats .text-warning {
+        color: #DCAD5C;
+        font-weight: bold;
         font-style: italic;
     }
