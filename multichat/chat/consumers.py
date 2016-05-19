@@ -105,7 +105,7 @@ def chat_leave(message):
 @catch_client_error
 def chat_send(message):
     # Check that the user in the room
-    if message['room'] not in message.channel_session['rooms']:
+    if int(message['room']) not in message.channel_session['rooms']:
         raise ClientError("ROOM_ACCESS_DENIED")
     # Find the room they're sending to, check perms
     room = get_room_or_error(message["room"], message.user)
