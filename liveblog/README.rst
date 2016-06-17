@@ -15,7 +15,7 @@ onto that Group that all currently connected clients pick up on, and insert
 the new post at the top of the page.
 
 Updates are also supported - the notification is sent with an ID, and if a post
-with that ID is already on the page, the JavaScript just replaces its content 
+with that ID is already on the page, the JavaScript just replaces its content
 instead.
 
 
@@ -36,30 +36,34 @@ point to ``localhost``, port ``6379``, but you can change this in the
 Finally, run::
 
     python manage.py migrate
+    python manage.py createsuperuser
     python manage.py runserver
 
 Docker installation
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Run the app::
-  
-    docker-compose up
 
-The app will now be running on: {your-docker-ip}:8000
+    docker-compose up -d
 
-* You will need to prefix ``python manage.py`` commands with: ``docker-compose run --rm web``. e.g.: ``docker-compose run --rm web python manage.py createsuperuser``
+You can omit the `-d` if you want to have the container log directly to
+your terminal.   You can always see the logs with::
 
-Finally, run::
+    docker-compose logs web
 
-    docker-compose run --rm web python manage.py migrate
+The app will now be running on: http://{your-docker-ip}:8000
 
+The migration is done as part of the Dockerfile and shouldn't need to be
+repeated (but it's ok to do so if you get an error).
+
+Then create the superuser::
+
+    docker-compose run --rm web python manage.py createsuperuser
 
 Usage
 -----
 
-Make yourself a superuser account::
-
-    python manage.py createsuperuser
+For Docker, replace `localhost` below with `{your-docker-ip}`.
 
 Then, log into http://localhost:8000/admin/ and make a new Liveblog object.
 
@@ -68,8 +72,6 @@ to see its posts page.
 
 Now, in the admin, make some new Posts against your blog, and watch them appear
 in your new window. Edit them, and they'll update themselves live on the page too.
-
-
 
 
 Suggested Exercises
