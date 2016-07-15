@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Databinding Example{% endblock %}
+{% block header_text %}Databinding Example{% endblock %}
+
+{% block content %}
+
+    <div id="values">
+        {% for integer_value in integer_values %}
+            <p data-value-id='{{ integer_value.pk }}'>
+                {{ integer_value.name }}: <input type='range' value='{{ integer_value.value }}' min='0' max='100'>
+            </p>
+        {% empty %}
+            <p class="empty">No values yet.</p>
+        {% endfor %}
+    </div>
+
+{% endblock %}
+
+{% block extra_body %}
+    <script>
+        $(function () {
+            // Correctly decide between ws:// and wss://
+            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+            var ws_path = ws_scheme + '://' + window.location.host + window.location.pathname + "stream/";
+            console.log("Connecting to " + ws_path);
+            var socket = new ReconnectingWebSocket(ws_path);
+
+            // Handle incoming messages
+            socket.onmessage = function(message) {
+                // Decode the JSON
+                console.log("Got message " + message.data);
+                var data = JSON.parse(message.data);
+                // Handle different actions
+                if (data.action == "create") {
+                    // Create the new integer value
+                    var content = "<p data-value-id='" + data.pk + "'>" + data.data.name + ": <input type='range' value='" + data.data.value + "' min='0' max='100'>";
+                    $("#values").append(content);
+                    // Remove empty message
+                    $("#values .empty").remove();
+                } else if (data.action == "update") {
+                    $("p[data-value-id=" + data.pk + "] input").val(data.data.value);
+                } else if (data.action == "delete") {
+                    $("p[data-value-id=" + data.pk + "]").remove();
+                }
+            };
+
+            // Bind changing the slider value
+            $("input").on("change", function () {
+                socket.send(JSON.stringify({
+                    "pk": $(this).parent().attr("data-value-id"),
+                    "model": "values.integervalue",
+                    "action": "update",
+                    "data": {
+                        "value": $(this).val(),
+                    }
+                }));
+            });
+
+            // Helpful debugging
+            socket.onopen = function() { console.log("Connected to notification socket"); }
+            socket.onclose = function() { console.log("Disconnected to notification socket"); }
+        });
+    </script>
+{% endblock %}
