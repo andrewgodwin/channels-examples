@@ -1,23 +1,18 @@
-Liveblog
-========
+Databinding
+===========
 
-Illustrates a "liveblog" using Channels. This is a page that shows a series
-of short-form posts in descending date order, with new ones appearing at the
-top as they're posted.
+Basic illustration of the Channels data binding framework, which allows you
+to easily tie model changes to WebSockets for bidirectional binding with
+JavaScript user interfaces.
 
-The site supports multiple liveblogs at once, and clients only listen for new
-posts on the blog they're currently viewing.
+It has just an IntegerValue model, which has a name and a value. The example
+exposes each value as a slider on the root page, which when moved immediately
+databinds the change back into the Django model, and which updates immediately
+as the Django model is changed to reflect the new value.
 
-When you view a liveblog page, we open a WebSocket to Django, and the consumer
-there adds it to a Group based on the liveblog slug it used in the URL of the
-socket. Then, in the ``save()`` method of the ``Post`` model, we send notifications
-onto that Group that all currently connected clients pick up on, and insert
-the new post at the top of the page.
-
-Updates are also supported - the notification is sent with an ID, and if a post
-with that ID is already on the page, the JavaScript just replaces its content 
-instead.
-
+Open as many windows as you like of the root page and move the sliders,
+and all will immediately update to the current value. You can even edit the
+values in the admin and the values will change as soon as you hit save.
 
 Installation
 ------------
@@ -43,13 +38,13 @@ Make yourself a superuser account::
 
     python manage.py createsuperuser
 
-Then, log into http://localhost:8000/admin/ and make a new Liveblog object.
+Then, log into http://localhost:8000/admin/ and make some new Integer Values.
 
-Open a new window, go to http://localhost:8000/, and click on your new liveblog
-to see its posts page.
+Open several new windows, point them all to http://localhost:8000/, and move
+the sliders and see how the others update in real time as you change the values.
 
-Now, in the admin, make some new Posts against your blog, and watch them appear
-in your new window. Edit them, and they'll update themselves live on the page too.
+Edit the values through the admin view, and see how the sliders update to match
+as soon as you hit save.
 
 
 Suggested Exercises
@@ -58,27 +53,19 @@ Suggested Exercises
 If you want to try out making some changes and getting a feel for Channels,
 here's some ideas and hints on how to do them:
 
-* Make the posts disappear immediately on post deletion. You'll need to send
-  notifications triggered on the model delete, in a similar way to the ones
-  for save, and modify the JavaScript to understand them.
+* Add the ability to create and delete integer values from the slider page
+  using inbound data binding. The Django side of this is already complete;
+  you just need to make the JavaScript send "create" actions with data and
+  "delete" actions with a PK.
 
-* Implement a view of all liveblogs at once. You'll need to make a new group
-  that people who connect to this endpoint will subscribe to, insert into that
-  group from the save() method as well as the existing per-liveblog group,
-  and make new consumers to add and remove people from that group as they
-  connect to a WebSocket on a different path (including new routing entries).
+* Implement permission checking on the sliders, by overriding the has_permission
+  method on the binding. You wouldn't want an insecure update mechanism
+  would you?
 
-* Make the front page list of liveblogs update. You'll need another new WebSocket
-  endpoint (with new consumers and routing), a new group to send updates down,
-  and to tie that group into LiveBlog's save process. Decide if you want to
-  send differential updates, or just re-send the whole list each time a new one
-  is created. Both have advantages - what are they?
-
-* Try adding Like functionality to the posts, so viewers can "like" a post and
-  it's sent back over the WebSocket to a ``websocket.receive`` consumer that
-  saves the like into the database, then propagates it to all existing clients.
-  Can you reuse the existing Post.save() hook? What happens if hundreds
-  of people are trying to like every second?
+* Make a page for each value that listens on a group just for that value's ID.
+  You'll need new incoming WebSocket URLs, a dynamic group_names method on
+  the binding that takes the PK in the path into account, and a tweak to the
+  JavaScript to use the new URLs.
 
 
 Further Reading
