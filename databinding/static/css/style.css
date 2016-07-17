@@ -77,9 +77,19 @@ p {
     font-style: italic;
 }
 
-.post {
-    margin: 0 0 30px 0;
+label {
+    font-size: 20px;
+    padding-right: 20px;
+    width: 100px;
+    display: inline-block;
 }
-    .post h2 {
-        font-weight: bold;
-    }
+
+input {
+    height: 15px;
+    width: 200px;
+}
+
+output {
+    font-size: 20px;
+    padding-left: 10px;
+}
