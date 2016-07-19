@@ -33,19 +33,27 @@
                 // Decode the JSON
                 console.log("Got message " + message.data);
                 var data = JSON.parse(message.data);
-                // Handle different actions
-                if (data.action == "create") {
-                    // Create the new integer value
-                    var content = "<p data-value-id='" + data.pk + "'><label>" + data.data.name + "</label> <input type='range' value='" + data.data.value + "' min='0' max='100'><output>" + data.data.value + "</output>";
-                    $("#values").append(content);
-                    // Remove empty message
-                    $("#values .empty").remove();
-                } else if (data.action == "update") {
-                    $("p[data-value-id=" + data.pk + "] label").text(data.data.name);
-                    $("p[data-value-id=" + data.pk + "] input").val(data.data.value);
-                    $("p[data-value-id=" + data.pk + "] output").val(data.data.value);
-                } else if (data.action == "delete") {
-                    $("p[data-value-id=" + data.pk + "]").remove();
+                var streamName = data.stream;
+                var payload = data.payload;
+                if (streamName == "intval") {
+                    // Handle different actions
+                    if (payload.action == "create") {
+                        // Create the new integer value
+                        var content = "<p data-value-id='" + payload.pk + "'><label>" + payload.data.name + "</label> <input type='range' value='" + payload.data.value + "' min='0' max='100'><output>" + payload.data.value + "</output>";
+                        $("#values").append(content);
+                        // Remove empty message
+                        $("#values .empty").remove();
+                    } else if (payload.action == "update") {
+                        $("p[data-value-id=" + payload.pk + "] label").text(payload.data.name);
+                        $("p[data-value-id=" + payload.pk + "] input").val(payload.data.value);
+                        $("p[data-value-id=" + payload.pk + "] output").val(payload.data.value);
+                    } else if (payload.action == "delete") {
+                        $("p[data-value-id=" + payload.pk + "]").remove();
+                    } else {
+                        console.log("Unknown action " + payload.action);
+                    }
+                } else {
+                    console.log("Unknown stream " + streamName);
                 }
             };
 
@@ -53,11 +61,13 @@
             $("input").on("change", function () {
                 $(this).parent().find("output").val($(this).val());
                 socket.send(JSON.stringify({
-                    "pk": $(this).parent().attr("data-value-id"),
-                    "model": "values.integervalue",
-                    "action": "update",
-                    "data": {
-                        "value": $(this).val(),
+                    "stream": "intval",
+                    "payload": {
+                        "pk": $(this).parent().attr("data-value-id"),
+                        "action": "update",
+                        "data": {
+                            "value": $(this).val(),
+                        }
                     }
                 }));
             });

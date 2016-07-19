@@ -1,5 +1,6 @@
-from channels import route_class
-from values.consumers import BindingConsumer
+from channels import route_class, route
+from values.consumers import Demultiplexer
+from values.models import IntegerValueBinding
 
 
 # The channel routing defines what channels get handled by what consumers,
@@ -7,5 +8,6 @@ from values.consumers import BindingConsumer
 # all WebSocket connections to the class-based BindingConsumer (the consumer
 # class itself specifies what channels it wants to consume)
 channel_routing = [
-    route_class(BindingConsumer),
+    route_class(Demultiplexer),
+    route("binding.intval", IntegerValueBinding.consumer),
 ]
