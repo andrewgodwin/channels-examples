@@ -1,4 +1,3 @@
-from channels import Group
 from channels.binding.websockets import WebsocketBindingDemultiplexer
 
 from .models import IntegerValueBinding

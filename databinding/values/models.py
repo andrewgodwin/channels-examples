@@ -1,4 +1,3 @@
-import json
 from django.db import models
 from channels.binding.websockets import WebsocketBinding
 
