@@ -12,6 +12,7 @@ class IntegerValueBinding(WebsocketBinding):
 
     model = IntegerValue
     stream = "intval"
+    fields = ["name", "value"]
 
     def group_names(self, instance, action):
         return ["binding.values"]
