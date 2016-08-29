@@ -8,6 +8,6 @@ from values.models import IntegerValueBinding
 # all WebSocket connections to the class-based BindingConsumer (the consumer
 # class itself specifies what channels it wants to consume)
 channel_routing = [
-    route_class(Demultiplexer),
+    route_class(Demultiplexer, path='^/stream/?$'),
     route("binding.intval", IntegerValueBinding.consumer),
 ]
