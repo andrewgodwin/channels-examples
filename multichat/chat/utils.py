@@ -1,3 +1,5 @@
+from functools import wraps
+
 from .exceptions import ClientError
 from .models import Room
 
@@ -6,9 +8,10 @@ def catch_client_error(func):
     """
     Decorator to catch the ClientError exception and translate it into a reply.
     """
-    def inner(message):
+    @wraps(func)
+    def inner(message, *args, **kwargs):
         try:
-            return func(message)
+            return func(message, *args, **kwargs)
         except ClientError as e:
             # If we catch a client error, tell it to send an error string
             # back to the client on their reply channel

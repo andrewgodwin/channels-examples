@@ -15,7 +15,7 @@ class IntegerValueBinding(WebsocketBinding):
     fields = ["name", "value"]
 
     @classmethod
-    def group_names(cls, instance):
+    def group_names(cls, *args, **kwargs):
         return ["binding.values"]
 
     def has_permission(self, user, action, pk):
