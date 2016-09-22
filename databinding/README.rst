@@ -17,6 +17,9 @@ values in the admin and the values will change as soon as you hit save.
 Installation
 ------------
 
+Manual installation
+~~~~~~~~~~~~~~~~~~~~~~
+
 Make a new virtualenv for the project, and run::
 
     pip install -r requirements.txt
@@ -25,18 +28,37 @@ Then, you'll need Redis running locally; the settings are configured to
 point to ``localhost``, port ``6379``, but you can change this in the
 ``CHANNEL_LAYERS`` setting in ``settings.py``.
 
+
 Finally, run::
 
     python manage.py migrate
+    python manage.py createsuperuser
     python manage.py runserver
+
+Docker installation
+~~~~~~~~~~~~~~~~~~~~~~
+
+Run the app::
+
+    docker-compose up -d
+
+The app will now be running on: http://{your-docker-ip}:8000
+
+The migration is done as part of the Dockerfile and shouldn't need to be
+repeated (but it's ok to do so if you get an error).
+
+If migration required you can run::
+
+    docker-compose run --rm web python manage.py migrate
+
+Then create the superuser::
+
+    docker-compose run --rm web python manage.py createsuperuser
 
 
 Usage
 -----
-
-Make yourself a superuser account::
-
-    python manage.py createsuperuser
+For Docker, replace `localhost` below with `{your-docker-ip}`.
 
 Then, log into http://localhost:8000/admin/ and make some new Integer Values.
 
