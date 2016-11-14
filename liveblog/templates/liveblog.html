@@ -49,12 +49,13 @@
             $(".post-button").click(function(){
                 if($(".content-post").val() == "")
                 {
-                    alert("Empty");
+                    alert("Empty text");
                 }
                 else
                 {
                     var content = $(".content-post").val()
                     socket.send(JSON.stringify({"post":content}));
+                    $(".content-post").val('');
                 }
 
             });
