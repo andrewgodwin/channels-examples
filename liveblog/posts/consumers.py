@@ -1,6 +1,6 @@
 import json
 from channels import Group
-from .models import Liveblog
+from .models import Liveblog, Post
 
 
 # The "slug" keyword argument here comes from the regex capture group in
@@ -50,3 +50,11 @@ def disconnect_blog(message, slug):
     # It's called .discard() because if the reply channel is already there it
     # won't fail - just like the set() type.
     Group(liveblog.group_name).discard(message.reply_channel)
+
+def save_post(message, slug):
+    """
+    Saves vew post to the database.
+    """
+    post = json.loads(message['text'])['post']
+    liveblog = Liveblog.objects.get(slug=slug)
+    Post.objects.create(liveblog=liveblog, body=post)

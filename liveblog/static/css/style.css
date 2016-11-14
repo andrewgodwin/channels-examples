@@ -83,3 +83,18 @@ p {
     .post h2 {
         font-weight: bold;
     }
+.content-post{
+    width: 70%;
+    height: 100px;
+    border-radius: 10px;
+    outline: none;
+    padding: 10px;
+}
+
+.post-button{
+    float: right;
+    margin-right: 130px;
+    margin-top: 95px;
+    width: 75px;
+    height: 25px;
+}
