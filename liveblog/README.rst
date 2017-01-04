@@ -23,11 +23,11 @@ Installation
 ------------
 
 Manual installation
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 Make a new virtualenv for the project, and run::
 
-    pip install -r requirements.txt
+    pip install -r requirements/redis.txt
 
 Then, you'll need Redis running locally; the settings are configured to
 point to ``localhost``, port ``6379``, but you can change this in the
@@ -40,7 +40,7 @@ Finally, run::
     python manage.py runserver
 
 Docker installation
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 Run the app::
 
@@ -73,6 +73,28 @@ to see its posts page.
 Now, in the admin, make some new Posts against your blog, and watch them appear
 in your new window. Edit them, and they'll update themselves live on the page too.
 
+RabbitMQ
+--------
+
+You can try to run this example on RabbitMQ channel layer.
+
+For manual installation use following commands::
+
+    pip install -r requirements/rabbitmq.txt
+    export DJANGO_SETTINGS_MODULE="liveblog.settings.rabbitmq"
+    export PYTHONPATH=$PWD
+    django-admin migrate
+    django-admin createsuperuser
+    django-admin runworker
+    daphne -b 0.0.0.0 -p 8000 liveblog.asgi:channel_layer
+
+For docker installation use::
+
+    docker-compose -f docker-compose.rabbitmq.yml run --rm web django-admin migrate
+    docker-compose -f docker-compose.rabbitmq.yml run --rm web django-admin createsuperuser
+    docker-compose -f docker-compose.rabbitmq.yml up -d
+
+The rest of necessary steps are the same.
 
 Suggested Exercises
 -------------------

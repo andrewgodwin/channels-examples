@@ -1,0 +1,26 @@
+version: "2"
+services:
+  rabbitmq:
+    image: rabbitmq:management
+    ports:
+      - "15672:15672"
+  web:
+    build:
+      context: .
+      dockerfile: compose/Dockerfile.rabbitmq
+    command: daphne -b 0.0.0.0 -p 8000 liveblog.asgi:channel_layer
+    volumes:
+      - .:/code
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8000:8000"
+  worker:
+    build:
+      context: .
+      dockerfile: compose/Dockerfile.rabbitmq
+    command: django-admin runworker
+    volumes:
+      - .:/code
+    depends_on:
+      - rabbitmq
