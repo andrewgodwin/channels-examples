@@ -1,0 +1,3 @@
+Django>=1.9
+channels>=0.10
+git+https://github.com/proofit404/asgi_rabbitmq.git@524e9f12bad9fcb4f24c7345a1a6cd8a264aa494#egg=asgi_rabbitmq

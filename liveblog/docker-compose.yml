@@ -1,10 +1,11 @@
 version: "2"
-
 services:
   redis:
     image: redis:alpine
   web:
-    build: .
+    build:
+      context: .
+      dockerfile: compose/Dockerfile.redis
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code

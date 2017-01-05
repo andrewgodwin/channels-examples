@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # SECURITY WARNING: keep the secret key used in production secret! And don't use debug=True in production!
 SECRET_KEY = 'imasecret'
@@ -43,21 +43,6 @@ MIDDLEWARE_CLASSES = [
 ]
 
 ROOT_URLCONF = 'liveblog.urls'
-
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
-
-# Channel layer definitions
-# http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
-CHANNEL_LAYERS = {
-    "default": {
-        # This example app uses the Redis channel layer implementation asgi_redis
-        "BACKEND": "asgi_redis.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [(redis_host, 6379)],
-        },
-        "ROUTING": "liveblog.routing.channel_routing",
-    },
-}
 
 TEMPLATES = [
     {

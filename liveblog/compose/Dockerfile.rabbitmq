@@ -1,0 +1,9 @@
+FROM python:3.5
+ENV PYTHONUNBUFFERED 1
+ENV RABBITMQ_HOST "rabbitmq"
+ENV DJANGO_SETTINGS_MODULE "liveblog.settings.rabbitmq"
+ENV PYTHONPATH "/code"
+RUN mkdir /code
+WORKDIR /code
+ADD . /code/
+RUN pip install -r requirements/rabbitmq.txt
