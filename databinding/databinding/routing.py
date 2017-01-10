@@ -1,6 +1,5 @@
-from channels import route_class, route
+from channels import route_class
 from values.consumers import Demultiplexer
-from values.models import IntegerValueBinding
 
 
 # The channel routing defines what channels get handled by what consumers,
@@ -9,5 +8,4 @@ from values.models import IntegerValueBinding
 # class itself specifies what channels it wants to consume)
 channel_routing = [
     route_class(Demultiplexer, path='^/stream/?$'),
-    route("binding.intval", IntegerValueBinding.consumer),
 ]

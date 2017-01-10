@@ -30,6 +30,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'channels',
     'values',
+
+    'debug_toolbar',
+    'channels_panel',
+]
+
+DEBUG_TOOLBAR_CONFIG = {'SHOW_TOOLBAR_CALLBACK': lambda request: not request.is_ajax() and DEBUG}
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'channels_panel.panel.ChannelsDebugPanel',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -44,7 +53,7 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'databinding.urls'
 
-redis_host = os.environ.get('REDIS_HOST', 'localhost')
+redis_host = os.environ.get('REDIS_HOST', 'redis')
 
 # Channel layer definitions
 # http://channels.readthedocs.org/en/latest/deploying.html#setting-up-a-channel-backend
