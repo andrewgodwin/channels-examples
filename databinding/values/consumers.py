@@ -1,11 +1,11 @@
 from channels.generic.websockets import WebsocketDemultiplexer
 
+from .models import IntegerValueBinding
+
 
 class Demultiplexer(WebsocketDemultiplexer):
-
-    mapping = {
-        "intval": "binding.intval",
+    consumers = {
+        "intval": IntegerValueBinding.consumer,
     }
 
-    def connection_groups(self):
-        return ["binding.values"]
+    groups = ["binding.values"]

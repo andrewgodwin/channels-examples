@@ -16,6 +16,7 @@ from .exceptions import ClientError
 # in all consumers with the same reply_channel, so all three here)
 @channel_session_user_from_http
 def ws_connect(message):
+    message.reply_channel.send({'accept': True})
     # Initialise their session
     message.channel_session['rooms'] = []
 
