@@ -58,7 +58,7 @@
             };
 
             // Bind changing the slider value
-            $("input").on("change", function () {
+            $("#values").on("change", "input", function () {
                 $(this).parent().find("output").val($(this).val());
                 socket.send(JSON.stringify({
                     "stream": "intval",
