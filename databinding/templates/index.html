@@ -22,59 +22,46 @@
 {% block extra_body %}
     <script>
         $(function () {
-            // Correctly decide between ws:// and wss://
-            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-            var ws_path = ws_scheme + '://' + window.location.host + window.location.pathname + "stream/";
+            var ws_path =  "/stream/";
             console.log("Connecting to " + ws_path);
-            var socket = new ReconnectingWebSocket(ws_path);
 
-            // Handle incoming messages
-            socket.onmessage = function(message) {
-                // Decode the JSON
-                console.log("Got message " + message.data);
-                var data = JSON.parse(message.data);
-                var streamName = data.stream;
-                var payload = data.payload;
-                if (streamName == "intval") {
-                    // Handle different actions
-                    if (payload.action == "create") {
-                        // Create the new integer value
-                        var content = "<p data-value-id='" + payload.pk + "'><label>" + payload.data.name + "</label> <input type='range' value='" + payload.data.value + "' min='0' max='100'><output>" + payload.data.value + "</output>";
-                        $("#values").append(content);
-                        // Remove empty message
-                        $("#values .empty").remove();
-                    } else if (payload.action == "update") {
-                        $("p[data-value-id=" + payload.pk + "] label").text(payload.data.name);
-                        $("p[data-value-id=" + payload.pk + "] input").val(payload.data.value);
-                        $("p[data-value-id=" + payload.pk + "] output").val(payload.data.value);
-                    } else if (payload.action == "delete") {
-                        $("p[data-value-id=" + payload.pk + "]").remove();
-                    } else {
-                        console.log("Unknown action " + payload.action);
-                    }
+            var webSocketBridge = new channels.WebSocketBridge();
+            webSocketBridge.connect(ws_path);
+            webSocketBridge.listen();
+            webSocketBridge.demultiplex('intval', function(payload, streamName) {
+                // Handle different actions
+                if (payload.action == "create") {
+                    // Create the new integer value
+                    var content = "<p data-value-id='" + payload.pk + "'><label>" + payload.data.name + "</label> <input type='range' value='" + payload.data.value + "' min='0' max='100'><output>" + payload.data.value + "</output>";
+                    $("#values").append(content);
+                    // Remove empty message
+                    $("#values .empty").remove();
+                } else if (payload.action == "update") {
+                    $("p[data-value-id=" + payload.pk + "] label").text(payload.data.name);
+                    $("p[data-value-id=" + payload.pk + "] input").val(payload.data.value);
+                    $("p[data-value-id=" + payload.pk + "] output").val(payload.data.value);
+                } else if (payload.action == "delete") {
+                    $("p[data-value-id=" + payload.pk + "]").remove();
                 } else {
-                    console.log("Unknown stream " + streamName);
+                    console.log("Unknown action " + payload.action);
                 }
-            };
+            });
 
             // Bind changing the slider value
             $("#values").on("change", "input", function () {
                 $(this).parent().find("output").val($(this).val());
-                socket.send(JSON.stringify({
-                    "stream": "intval",
-                    "payload": {
-                        "pk": $(this).parent().attr("data-value-id"),
-                        "action": "update",
-                        "data": {
-                            "value": $(this).val(),
-                        }
+                webSocketBridge.stream('intval').send({
+                    "pk": $(this).parent().attr("data-value-id"),
+                    "action": "update",
+                    "data": {
+                        "value": $(this).val(),
                     }
-                }));
+                });
             });
 
             // Helpful debugging
-            socket.onopen = function() { console.log("Connected to notification socket"); }
-            socket.onclose = function() { console.log("Disconnected to notification socket"); }
+            webSocketBridge.socket.addEventListener('open', function() { console.log("Connected to notification socket"); });
+            webSocketBridge.socket.addEventListener('close', function() { console.log("Disconnected to notification socket"); });
         });
     </script>
 {% endblock %}

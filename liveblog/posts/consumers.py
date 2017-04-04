@@ -54,7 +54,7 @@ def disconnect_blog(message, slug):
 
 def save_post(message, slug):
     """
-    Saves vew post to the database.
+    Saves new post to the database.
     """
     post = json.loads(message['text'])['post']
     liveblog = Liveblog.objects.get(slug=slug)

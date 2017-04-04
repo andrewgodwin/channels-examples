@@ -23,16 +23,15 @@
     <script>
         $(function () {
             // Correctly decide between ws:// and wss://
-            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-            var ws_path = ws_scheme + '://' + window.location.host + "/chat/stream/";
+            var ws_path = "/chat/stream/";
             console.log("Connecting to " + ws_path);
-            var socket = new ReconnectingWebSocket(ws_path);
 
+            var webSocketBridge = new channels.WebSocketBridge();
+            webSocketBridge.connect(ws_path);
             // Handle incoming messages
-            socket.onmessage = function (message) {
+            webSocketBridge.listen(function(data) {
                 // Decode the JSON
-                console.log("Got websocket message " + message.data);
-                var data = JSON.parse(message.data);
+                console.log("Got websocket message", data);
                 // Handle errors
                 if (data.error) {
                     alert(data.error);
@@ -50,11 +49,11 @@
                     );
                     // Hook up send button to send a message
                     roomdiv.find("form").on("submit", function () {
-                        socket.send(JSON.stringify({
+                        webSocketBridge.send({
                             "command": "send",
                             "room": data.join,
                             "message": roomdiv.find("input").val()
-                        }));
+                        });
                         roomdiv.find("input").val("");
                         return false;
                     });
@@ -114,7 +113,7 @@
                 } else {
                     console.log("Cannot handle message!");
                 }
-            };
+            });
 
             // Says if we joined a room or not by if there's a div for it
             inRoom = function (roomId) {
@@ -127,25 +126,25 @@
                 if (inRoom(roomId)) {
                     // Leave room
                     $(this).removeClass("joined");
-                    socket.send(JSON.stringify({
+                    webSocketBridge.send({
                         "command": "leave",
                         "room": roomId
-                    }));
+                    });
                 } else {
                     // Join room
                     $(this).addClass("joined");
-                    socket.send(JSON.stringify({
+                    webSocketBridge.send({
                         "command": "join",
                         "room": roomId
-                    }));
+                    });
                 }
             });
 
             // Helpful debugging
-            socket.onopen = function () {
+            webSocketBridge.socket.onopen = function () {
                 console.log("Connected to chat socket");
             };
-            socket.onclose = function () {
+            webSocketBridge.socket.onclose = function () {
                 console.log("Disconnected from chat socket");
             }
         });

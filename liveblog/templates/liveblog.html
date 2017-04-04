@@ -22,17 +22,13 @@
 {% block extra_body %}
     <script>
         $(function () {
-            // Correctly decide between ws:// and wss://
-            var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
-            var ws_path = ws_scheme + '://' + window.location.host + window.location.pathname + "stream/";
+            var ws_path =  window.location.pathname + "stream/";
             console.log("Connecting to " + ws_path);
-            var socket = new ReconnectingWebSocket(ws_path);
 
-            // Handle incoming messages
-            socket.onmessage = function(message) {
-                // Decode the JSON
-                console.log("Got message " + message.data);
-                var data = JSON.parse(message.data);
+            var webSocketBridge = new channels.WebSocketBridge();
+            webSocketBridge.connect(ws_path);
+            webSocketBridge.listen(function(data) {
+                console.log("Got message " + data);
                 // Create the inner content of the post div
                 var content = "<h2>" + data.created + "</h2>" + data.html;
                 // See if there's a div to replace it in, or if we should add a new one
@@ -43,7 +39,7 @@
                     var newdiv = $("<div class='post' data-post-id='" + data.id + "'>" + content + "</div>");
                     $("#posts").prepend(newdiv);
                 }
-            };
+            });
 
             // save blog post
             $(".post-button").click(function(){
@@ -54,7 +50,7 @@
                 else
                 {
                     var content = $(".content-post").val()
-                    socket.send(JSON.stringify({"post":content}));
+                    webSocketBridge.send({"post":content});
                     $(".content-post").val('');
                 }
 
@@ -62,8 +58,8 @@
 
 
             // Helpful debugging
-            socket.onopen = function() { console.log("Connected to notification socket"); }
-            socket.onclose = function() { console.log("Disconnected to notification socket"); }
+            webSocketBridge.socket.onopen = function() { console.log("Connected to notification socket"); }
+            webSocketBridge.socket.onclose = function() { console.log("Disconnected to notification socket"); }
         });
     </script>
 {% endblock %}
