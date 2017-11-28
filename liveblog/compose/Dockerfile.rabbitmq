@@ -7,3 +7,6 @@ RUN mkdir /code
 WORKDIR /code
 ADD . /code/
 RUN pip install -r requirements/rabbitmq.txt
+COPY ./compose/rabbitmq_entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
