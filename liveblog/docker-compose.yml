@@ -6,6 +6,7 @@ services:
     build:
       context: .
       dockerfile: compose/Dockerfile.redis
+    image: liveblog_redis
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/code

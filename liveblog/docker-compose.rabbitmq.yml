@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: compose/Dockerfile.rabbitmq
+    image: liveblog_rabbitmq
     command: daphne -b 0.0.0.0 -p 8000 liveblog.asgi:channel_layer
     volumes:
       - .:/code
@@ -19,6 +20,7 @@ services:
     build:
       context: .
       dockerfile: compose/Dockerfile.rabbitmq
+    image: liveblog_rabbitmq
     command: django-admin runworker
     volumes:
       - .:/code
