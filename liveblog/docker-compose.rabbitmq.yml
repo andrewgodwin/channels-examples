@@ -13,6 +13,7 @@ services:
     volumes:
       - .:/code
     depends_on:
+      - worker
       - rabbitmq
     ports:
       - "8000:8000"
@@ -22,6 +23,17 @@ services:
       dockerfile: compose/Dockerfile.rabbitmq
     image: liveblog_rabbitmq
     command: django-admin runworker
+    volumes:
+      - .:/code
+    depends_on:
+      - migrate
+      - rabbitmq
+  migrate:
+    build:
+      context: .
+      dockerfile: compose/Dockerfile.rabbitmq
+    image: liveblog_rabbitmq
+    command: python manage.py migrate
     volumes:
       - .:/code
     depends_on:
