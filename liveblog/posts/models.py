@@ -43,7 +43,11 @@ class Post(models.Model):
     """
 
     # Link back to the main blog.
-    liveblog = models.ForeignKey(Liveblog, related_name="posts")
+    liveblog = models.ForeignKey(
+        Liveblog,
+        related_name="posts",
+        on_delete=models.CASCADE,
+    )
 
     # Body content of this post. It'll have the linebreaks filter run on it,
     # but nothing else. You could change this to be HTML/RST/Markdown etc.
