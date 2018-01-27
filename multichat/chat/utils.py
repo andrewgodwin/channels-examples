@@ -24,7 +24,7 @@ def get_room_or_error(room_id, user):
     Tries to fetch a room for the user, checking permissions along the way.
     """
     # Check if the user is logged in
-    if not user.is_authenticated():
+    if not user.is_authenticated:
         raise ClientError("USER_HAS_TO_LOGIN")
     # Find the room they requested (by ID)
     try:
