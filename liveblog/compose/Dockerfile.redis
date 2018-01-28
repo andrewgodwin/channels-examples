@@ -1,4 +1,4 @@
-FROM python:3.5
+FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 ENV REDIS_HOST "redis"
 ENV DJANGO_SETTINGS_MODULE "liveblog.settings.redis"
