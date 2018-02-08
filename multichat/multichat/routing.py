@@ -1,19 +1,30 @@
-from channels import include
+from django.urls import path
+
+from channels.http import AsgiHandler
+from channels.routing import ProtocolTypeRouter, URLRouter
+from channels.auth import AuthMiddlewareStack
+
+from chat.consumers import ChatConsumer
 
 
-# The channel routing defines what channels get handled by what consumers,
-# including optional matching on message attributes. In this example, we match
-# on a path prefix, and then include routing from the chat module.
-channel_routing = [
-    # Include sub-routing from an app.
-    include("chat.routing.websocket_routing", path=r"^/chat/stream"),
+# The channel routing defines what connections get handled by what consumers,
+# selecting on either the connection type (ProtocolTypeRouter) or properties
+# of the connection's scope (like URLRouter, which looks at scope["path"])
+# For more, see http://channels.readthedocs.io/en/latest/topics/routing.html
+application = ProtocolTypeRouter({
 
-    # Custom handler for message sending (see Room.send_message).
-    # Can't go in the include above as it's not got a `path` attribute to match on.
-    include("chat.routing.custom_routing"),
+    # Channels will do this for you automatically. It's included here as an example.
+    # "http": AsgiHandler,
 
-    # A default "http.request" route is always inserted by Django at the end of the routing list
-    # that routes all unmatched HTTP requests to the Django view system. If you want lower-level
-    # HTTP handling - e.g. long-polling - you can do it here and route by path, and let the rest
-    # fall through to normal views.
-]
+    # Route all WebSocket requests to our custom chat handler.
+    # We actually don't need the URLRouter here, but we've put it in for
+    # illustration. Also note the inclusion of the AuthMiddlewareStack to
+    # add users and sessions - see http://channels.readthedocs.io/en/latest/topics/authentication.html
+    "websocket": AuthMiddlewareStack(
+        URLRouter([
+            # URLRouter just takes standard Django path() or url() entries.
+            path("chat/stream/", ChatConsumer),
+        ]),
+    ),
+
+})

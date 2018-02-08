@@ -1,11 +1,12 @@
 """
-ASGI entrypoint file for default channel layer.
-
-Points to the channel layer configured as "default" so you can point
-ASGI applications at "multichat.asgi:channel_layer" as their channel layer.
+ASGI entrypoint. Configures Django and then runs the application
+defined in the ASGI_APPLICATION setting.
 """
 
 import os
-from channels.asgi import get_channel_layer
+import django
+from channels.routing import get_default_application
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "multichat.settings")
-channel_layer = get_channel_layer()
+django.setup()
+application = get_default_application()

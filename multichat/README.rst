@@ -20,7 +20,7 @@ Installation
 ------------
 
 Manual installation
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 Make a new virtualenv for the project, and run::
 
@@ -35,16 +35,17 @@ Finally, run::
     python manage.py migrate
     python manage.py runserver
 
+
 Docker installation
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 Run the app::
-  
+
     docker-compose up -d
 
 The app will now be running on: {your-docker-ip}:8000
 
-**Note:** You will need to prefix ``python manage.py`` commands with: ``docker-compose run --rm web``. e.g.: ``docker-compose run --rm web python manage.py createsuperuser``
+**Note:** You will need to prefix any ``python manage.py`` commands with: ``docker-compose run --rm web``. e.g.: ``docker-compose run --rm web python manage.py createsuperuser``
 
 Finally, run::
 
@@ -77,26 +78,55 @@ If you try and make the non-staff user join your staff-only chatroom, you should
 see an error as the server-side authentication code kicks in.
 
 
+How It Works
+------------
+
+There's a normal Django view that just serves a HTML page behind the normal
+``@login_required`` decorator, and that is basically a single-page app with
+all the JS loaded into the ``index.html`` file (as this is an example).
+
+There's a single consumer, which you can see routed to in ``multichat/routing.py``,
+which is wrapped in the Channels authentication ASGI middleware so it can check
+that your user is logged in and retrieve it to check access as you ask to join
+rooms.
+
+Which rooms you are in is kept track of in ``self.rooms`` on the consumer
+so they can be left cleanly if you disconnect.
+
+Whenever the client asks to join a room, leave a room, or send a message,
+it sends a WebSocket text frame with a JSON encoded command. We use a generic
+consumer to handle decoding that JSON for us, and then dispatch to one of three
+handler functions based on what the command is.
+
+All rooms have an associated group, and for joins, leaves and messages, an
+event is sent over the channel layer to that group. The consumers who are in
+the group will receive those messages, and the consumer also has handler
+functions for those (e.g. ``chat_join``), which it uses to encode the events
+down into the WebSocket wire format before sending them to the client.
+
+
 Suggested Exercises
 -------------------
 
 If you want to try out making some changes and getting a feel for Channels,
 here's some ideas and hints on how to do them:
 
+* Make messages from yourself have a different message type. You'll need to
+  edit the ``chat_message`` function to send a different packet down to the
+  client based on if the ``chat.message`` event it gets is from you or not.
+
 * Add message persistence. There's already a message sent to make a user join
   a room, so you can use that to send some previous messages; you'll need to make
-  a model to save messages in, though, and write to it in the Room.send_message
-  function.
+  a model to save messages in, though.
 
 * Make the Room list dynamically change as rooms are added and removed.
-  You can do this in a similar way to the Liveblog example by adding hooks
-  to model save and delete and sending events over the channel when this happens.
+  You could add a common group that every socket joins and send events to it
+  as rooms are created/deleted.
 
 * Add message editing and deletion. You'll need to have made them persistent
   first; make sure you send message IDs down with every message so the client can
   keep track of them. Then, write some code to handle editing and trigger
   sending new messages down when this happens with the message ID it's happening to.
-  The Liveblog example has live editing already; that might help.
 
 
 Further Reading
