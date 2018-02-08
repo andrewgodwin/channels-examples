@@ -1,3 +1,0 @@
-Django>=1.9
-channels>=0.17
-asgi_redis>=0.13
