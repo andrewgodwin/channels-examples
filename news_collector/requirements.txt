@@ -1,0 +1,6 @@
+Django==2.0.5
+channels==2.1.1
+channels-redis==2.2.1
+requests==2.18.4
+aiohttp==3.2.1
+

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}NewsCollector Example{% endblock %}
+{% block header_text %}NewsCollector Example{% endblock %}
+
+{% block content %}
+
+    <div>
+        <h2>News</h2>
+        <div>
+            <button id="sync_reload">Sync Reload</button>
+            <button id="async_reload">Async Reload</button>
+        </div>
+        <br />
+        <div id="message" style="color: #5579BE; padding: 6px;"></div>
+        <div id="news" style="color: #aaa; padding: 6px;">
+        </div>
+    </div>
+
+{% endblock %}
+
+
+{% block extra_body %}
+    <script>
+        $(function () {
+
+            $("#sync_reload").on('click', function(event) {
+                reload_news(true);
+            });
+
+            $("#async_reload").on('click', function(event) {
+                reload_news(false);
+            });
+
+            var t0 = null;
+            var sync_mode = true;
+
+            // Ask to remote server to collect news
+            function reload_news(sync) {
+                $('#message').text('Loading ...');
+                $('#news').text('');
+
+                t0 = new Date();
+                var url = sync ? 'collector/collect_news_sync/' : 'collector/collect_news_async/';
+                sync_mode = sync;
+
+                $.ajax({
+                    type: "GET",
+                    url: url,
+                    data: {},
+                    cache: false,
+                    crossDomain: false,
+                    dataType: 'json'
+                }).done(function(data) {
+                    on_news_received(data);
+                });
+            }
+
+            // Display news received from remote server
+            function on_news_received(data) {
+                var dt = (new Date() - t0) / 1000;  // in seconds
+                var num_pages = Object.keys(data).length;
+                $('#message').text(num_pages + ' pages downloaded ' + (sync_mode ? "synchronously" : "asynchronously") + ' in ' + dt + ' seconds');
+                $('#news').text(Object.keys(data));
+            }
+
+        });
+    </script>
+{% endblock %}
