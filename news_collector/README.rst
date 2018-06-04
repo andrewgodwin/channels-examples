@@ -1,16 +1,14 @@
-NewsCollector: when and why async more is really worth
-======================================================
+NewsCollector
+=============
 
-Async code is less readeable and more difficult to debug, and requires the
-understanding of new concepts like coroutines and event loops.
+This examples shows off how asynchronous programming helps speed things
+up even inside of a simple HTTP request.
 
-Being aware of that, I'm certainly not going to use async code just because
-it's cool or fancy.
+This codebase fetches RSS feeds from a collection of other websites using
+a HTTP client - something that can only be done one at a time with synchronous
+code. The asynchronous version fetches them all in parallel, and the example
+lets you compare and contrast the runtimes of each approach.
 
-Nonetheless, a great effort has being devoted to provide Channels as
-a framework suitable for both synchronous and asynchronous contexts, and
-I have a sincere interest in understanding not just **how**, but rather **why**
-it's worth it and **when** it can provide advantages.
 
 Installation
 ------------
@@ -35,9 +33,10 @@ Finally, run::
 Usage
 -----
 
-No background models are required, and you won't need a superuser account.
+No models are required, and you won't need a superuser account; just load the
+page (probably at http://localhost:8000).
 
-The home page provides two buttons to let the user ask from the download of a
+The home page provides two buttons to let the user download content from a
 list of web pages; after data collection, the server sends back the results
 packed in a JSON dictionary.
 
@@ -45,11 +44,11 @@ In **sync mode, downloads happen sequentially**, and the total time required to
 complete the operation is at least the sum of the time required by each
 individual download.
 
-When demanting network operations are involved, there's a good chance to improve
-overall performances significantly by applying an async approach.
+When demanding network operations are involved, there's a good chance you can
+improve overall performance significantly with an async approach.
 
 In **async mode, pages are downloaded concurrently**, and the time required to
-collect all results in greatly reduced.
+collect all results is significantly reduced.
 
 .. image:: etc/screenshot.png
 

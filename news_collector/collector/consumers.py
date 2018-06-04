@@ -1,14 +1,15 @@
 import asyncio
-import requests
 import json
 import datetime
 from aiohttp import ClientSession
-from django.conf import settings
 from channels.generic.http import AsyncHttpConsumer
 from .constants import BLOGS
 
 
 class NewsCollectorAsyncConsumer(AsyncHttpConsumer):
+    """
+    Async HTTP consumer that fetches URLs.
+    """
 
     async def handle(self, body):
 
@@ -20,26 +21,29 @@ class NewsCollectorAsyncConsumer(AsyncHttpConsumer):
                 return await response.read()
 
         tasks = []
+        loop = asyncio.get_event_loop()
 
-        # Fetch all responses within one Client session,
-        # keep connection alive for all requests.
+        # aiohttp allows a ClientSession object to link all requests together
         t0 = datetime.datetime.now()
         async with ClientSession() as session:
             for name, url in BLOGS.items():
                 print('Start downloading "%s"' % name)
-                task = asyncio.ensure_future(fetch(url, session))
+                # Launch a coroutine for each URL fetch
+                task = loop.create_task(fetch(url, session))
                 tasks.append(task)
 
-            # gather all responses
+            # Wait on, and then gather, all responses
             responses = await asyncio.gather(*tasks)
             dt = (datetime.datetime.now() - t0).total_seconds()
-            print(f'All downloads completed; elapsed time: {dt} [s]')
+            print('All downloads completed; elapsed time: {} [s]'.format(dt))
 
-        # Here, we assume that the responses have been gathered
-        # in the same order as the original task list. Is this correct ?
+        # asyncio.gather returns results in the order of the original sequence,
+        # so we can safely zip these together.
         data = dict(zip(BLOGS.keys(), [r.decode('utf-8') for r in responses]))
         text = json.dumps(data)
 
+        # We have to send a response using send_response rather than returning
+        # it in Channels' async HTTP consumer
         await self.send_response(200,
             text.encode(),
             headers=[
