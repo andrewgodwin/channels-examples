@@ -47,6 +47,6 @@ class NewsCollectorAsyncConsumer(AsyncHttpConsumer):
         await self.send_response(200,
             text.encode(),
             headers=[
-                ("Content-Type", "application/json"),
+                (b"Content-Type", b"application/json"),
             ]
         )
